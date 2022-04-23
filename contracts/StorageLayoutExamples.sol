@@ -7,9 +7,13 @@ contract StorageLayoutExamples {
     uint16 public a;
     uint16 public b;
     uint256 public c;
+    
     uint256[] public dataArray;
+    uint256[][] public nestedDataArray;
+
     mapping(uint256 => S) public structDataMap;
     mapping(uint256 => mapping(uint256 => S)) public nestedStructDataMap;
+
     address public anAddress;
 
     constructor() {
@@ -21,6 +25,9 @@ contract StorageLayoutExamples {
         dataArray.push(22);     // 0x16
         dataArray.push(41);     // 0x29
         dataArray.push(98021);  // 0x17EE5
+
+        nestedDataArray.push([55, 774, 17]);
+        nestedDataArray.push([1111, 4421]);
         
         // 0xCF8, 0xA, 0x2FD
         structDataMap[5] = S(3320, 10, 765);
