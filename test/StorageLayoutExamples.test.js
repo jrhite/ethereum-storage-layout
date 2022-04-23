@@ -3,6 +3,7 @@ const { BigNumber } = require("ethers");
 const { ethers, waffle } = require("hardhat");
 
 const provider = waffle.provider;
+const utils = ethers.utils;
 
 describe('StorageLayoutExamples', function () {
   let StorageLayoutExamples;
@@ -48,8 +49,15 @@ describe('StorageLayoutExamples', function () {
     return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 2));
   }
 
-  async function getDataArrayValues() {
-    
+  async function getDataArrayValueAtIndex(arrayIndex) {
+    // TODO: implement `storageLayoutExamples.dataArray()` using provider.getStorageAt()
+
+    // pad slot to 32 * 8 bits = 256 bits
+    const hexStringStorageSlot = utils.hexZeroPad('0x2', 32);
+    const dataArrayBaseSlot = utils.keccak256(hexStringStorageSlot);
+    const dataArrayOffsetSlot = BigNumber.from(dataArrayBaseSlot).add(arrayIndex).toHexString();
+
+    return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, dataArrayOffsetSlot));
   }
 
   it("Primitive values in storage layout should be correct", async function () {
@@ -59,6 +67,11 @@ describe('StorageLayoutExamples', function () {
   });
 
   it('Dynamic array length and values in storage layout should be correct', async function () {
-    expect(2).to.equal(await getDataArrayLength());
+    const dataArrayLength = await getDataArrayLength();
+    expect(3).to.equal(dataArrayLength);
+
+    for (let i = 0; i < dataArrayLength; i++) {
+      expect(await storageLayoutExamples.dataArray(i)).to.equal(await getDataArrayValueAtIndex(i));
+    }
   });
 });
