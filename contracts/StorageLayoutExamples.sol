@@ -4,14 +4,23 @@ pragma solidity ^0.8.4;
 contract StorageLayoutExamples {
     struct S { uint16 a; uint16 b; uint256 c; }
 
+    // slot 0
     uint16 public a;
     uint16 public b;
+
+    // slot 1
     uint256 public c;
     
+    // slot 2 (array marker and size)
     uint256[] public dataArray;
+
+    // slot 3 (array marker and size)
     uint256[][] public nestedDataArray;
 
+    // slot 4 (mapping marker)
     mapping(uint256 => S) public structDataMap;
+
+    // slot 5 (mapping marker)    
     mapping(uint256 => mapping(uint256 => S)) public nestedStructDataMap;
 
     address public anAddress;
