@@ -54,7 +54,11 @@ describe('StorageLayoutExamples', function () {
 
     // pad slot to 32 * 8 bits = 256 bits
     const hexStringStorageSlot = utils.hexZeroPad('0x2', 32);
+
+    // get the hash of the array marker slot, as the hash is the actual starting point of the data in the array
     const dataArrayBaseSlot = utils.keccak256(hexStringStorageSlot);
+
+    // add the array item index offset to the base slot to get an individual item
     const dataArrayOffsetSlot = BigNumber.from(dataArrayBaseSlot).add(arrayIndex).toHexString();
 
     return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, dataArrayOffsetSlot));
