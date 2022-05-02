@@ -18,29 +18,29 @@ describe('StorageLayoutExamples', function () {
 
   async function getA() {
     // TODO: implement storageLayoutExamples.a() using provider.getStorageAt()
-    
-    const bitMask = 16; // keep only the right-most 16 bits
 
-    const a = BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 0));
-
-    return a.mask(bitMask);
+    return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 0));
   }
 
   async function getB() {
     // TODO: implement storageLayoutExamples.b() using provider.getStorageAt()
-
-    const shiftRight = 2 ** 16; // shift value to the right by 16 bits
+    
     const bitMask = 16; // keep only the right-most 16 bits
 
-    const b = BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 0));
+    const b = BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 1));
 
-    return b.div(shiftRight).mask(bitMask);
+    return b.mask(bitMask);
   }
 
   async function getC() {
     // TODO: implement storageLayoutExamples.c() using provider.getStorageAt()
 
-    return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 1));
+    const shiftRight = 2 ** 16; // shift value to the right by 16 bits
+    const bitMask = 16; // keep only the right-most 16 bits
+
+    const c = BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, 1));
+
+    return c.div(shiftRight).mask(bitMask);
   }
 
   async function getDataArrayLength() {
@@ -104,6 +104,18 @@ describe('StorageLayoutExamples', function () {
     return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, innerNestedDataArrayOffsetSlot));
   }
 
+  async function getDataMapValues(key) {
+    // TODO: implement storageLayoutExamples.dataMap() using provider.getStorageAt()
+
+    const hexStringStorageSlot = utils.hexZeroPad('0x4', 32);
+
+    const hexKey = key.toString(16);
+    const paddedKey = utils.hexZeroPad('0x' + hexKey, 32);
+    const mappingSlot = utils.keccak256(paddedKey + hexStringStorageSlot.slice(2));
+
+    return BigNumber.from(await provider.getStorageAt(storageLayoutExamples.address, mappingSlot));
+  }
+
   it("Primitive values in storage layout should be correct", async function () {
     expect(await storageLayoutExamples.a()).to.equal(await getA());
     expect(await storageLayoutExamples.b()).to.equal(await getB());
@@ -135,5 +147,10 @@ describe('StorageLayoutExamples', function () {
         expect(await storageLayoutExamples.nestedDataArray(i, j)).to.equal(await getInnerDataArrayValueAtIndices(i, j));
       }
     }
+  })
+
+  it('Mapping values in storage layout should be correct', async function () {
+    expect(await storageLayoutExamples.dataMap(5)).to.equal(await getDataMapValues(5));
+    expect(await storageLayoutExamples.dataMap(202)).to.equal(await getDataMapValues(202));
   });
 });

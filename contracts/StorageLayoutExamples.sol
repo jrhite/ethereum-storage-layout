@@ -5,11 +5,11 @@ contract StorageLayoutExamples {
     struct S { uint16 a; uint16 b; uint256 c; }
 
     // slot 0
-    uint16 public a;
-    uint16 public b;
+    uint256 public a;
 
-    // slot 1
-    uint256 public c;
+    // slot 1 (packed)
+    uint16 public b;
+    uint16 public c;
     
     // slot 2 (array marker and size)
     uint256[] public dataArray;
@@ -18,31 +18,38 @@ contract StorageLayoutExamples {
     uint256[][] public nestedDataArray;
 
     // slot 4 (mapping marker)
-    mapping(uint256 => S) public structDataMap;
+    mapping(uint256 => uint256) public dataMap;
 
-    // slot 5 (mapping marker)    
+    // slot 5 (mapping marker)
+    // mapping(uint256 => S) public structDataMap;
+
+    // slot 6 (mapping marker)
     mapping(uint256 => mapping(uint256 => S)) public nestedStructDataMap;
 
+    // slot 7
     address public anAddress;
 
     constructor() {
-        a = 217;              // 0xD9
-        b = 14;               // 0xE
+        a = 217995848383212;       // 0xC6441D1AFAEC
+
+        b = 11430;                 // 0x2CA6
+        c = 9071;                  // 0x236F
         
-        c = 33;               // 0x21
-        
-        dataArray.push(22);     // 0x16
-        dataArray.push(41);     // 0x29
-        dataArray.push(98021);  // 0x17EE5
+        dataArray.push(22);        // 0x16
+        dataArray.push(41);        // 0x29
+        dataArray.push(98021);     // 0x17EE5
 
         nestedDataArray.push([55, 774, 17]);
         nestedDataArray.push([1111, 4421]);
-        
-        // 0xCF8, 0xA, 0x2FD
-        structDataMap[5] = S(3320, 10, 765);
 
+
+        dataMap[5] = 3320;         // 0xcf8
+        dataMap[202] = 11987;      // 0x2ED3
+
+        // 0xCF8, 0xA, 0x2FD
+        // structDataMap[5] = S(3320, 10, 765);
         // 0x1F8, 0x20, 0x58
-        structDataMap[8] = S(504, 32, 88);
+        // structDataMap[8] = S(504, 32, 88);
 
         // 0x6, 0x245, 0x48
         nestedStructDataMap[3][4] = S(6, 581, 72);
