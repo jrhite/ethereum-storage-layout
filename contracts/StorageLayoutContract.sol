@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.4;
 
-contract StorageLayoutExamples {
+contract StorageLayoutContract {
     struct S { uint16 a; uint16 b; uint256 c; }
 
     // slot 0
@@ -21,7 +21,7 @@ contract StorageLayoutExamples {
     mapping(uint256 => uint256) public dataMap;
 
     // slot 5 (mapping marker)
-    // mapping(uint256 => S) public structDataMap;
+    mapping(uint256 => S) public structDataMap;
 
     // slot 6 (mapping marker)
     mapping(uint256 => mapping(uint256 => S)) public nestedStructDataMap;
@@ -42,14 +42,13 @@ contract StorageLayoutExamples {
         nestedDataArray.push([55, 774, 17]);
         nestedDataArray.push([1111, 4421]);
 
-
-        dataMap[5] = 3320;         // 0xcf8
+        dataMap[5] = 3320;         // 0xCF8
         dataMap[202] = 11987;      // 0x2ED3
 
-        // 0xCF8, 0xA, 0x2FD
-        // structDataMap[5] = S(3320, 10, 765);
+        // 0x36E, 0xA, 0x2FD
+        structDataMap[11] = S(878, 10, 765);
         // 0x1F8, 0x20, 0x58
-        // structDataMap[8] = S(504, 32, 88);
+        structDataMap[88] = S(504, 32, 88);
 
         // 0x6, 0x245, 0x48
         nestedStructDataMap[3][4] = S(6, 581, 72);
