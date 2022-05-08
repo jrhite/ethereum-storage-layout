@@ -71,9 +71,10 @@ describe('StorageLayout', function () {
 
   it('Struct mapping values in storage layout should be correct', async function () {
     const sdm = await storageLayoutContract.structDataMap(11);
-    const x = await StorageLayout.getStructDataMap(11);
+    const structVals = await StorageLayout.getStructDataMap(11);
 
-    console.log(`sdm.a = ${sdm.a}`);
-    console.log(`x.a = ${x.a}`);
+    expect(sdm.a).to.equal(structVals[0]);
+    expect(sdm.b).to.equal(structVals[1]);
+    expect(sdm.c).to.equal(structVals[2]);
   });
 });

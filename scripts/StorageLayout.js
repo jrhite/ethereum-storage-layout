@@ -149,16 +149,17 @@ async function getStructDataMap(key) {
 
   const mappingSlot2 = BigNumber.from(mappingSlot).add(1).toHexString();
 
-  console.log({ mappingSlot });
-  console.log({ mappingSlot2 });
+  const shiftRight = 2 ** 16;
+  const bitMask = 16;
 
-  const a = provider.getStorageAt(contractAddress, mappingSlot);
-  const b = provider.getStorageAt(contractAddress, mappingSlot2);
+  let a = BigNumber.from(await provider.getStorageAt(contractAddress, mappingSlot));
+  let b = a;
+  const c = BigNumber.from(await provider.getStorageAt(contractAddress, mappingSlot2));
 
-  return await provider.getStorageAt(
-    contractAddress,
-    mappingSlot
-  );
+  a = a.mask(bitMask);
+  b = b.div(shiftRight).mask(bitMask);
+
+  return [a, b, c];
 }
 
 exports.StorageLayout = {
